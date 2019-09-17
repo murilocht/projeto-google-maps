@@ -32,7 +32,13 @@
   - OU ADAPTE TEU BANCO LOCAL
   - OU AUTERE LÁ EM DASHBOARD/API/INDEX.JS
 
+
 6ª - ICONES
   http://maps.google.com/mapfiles/ms/icons/blue-dot.png
   https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png
   https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|00D900
+
+
+7º - INSTALAR DEPENDÊNCIAS DO APP
+  LA EM APP/
+    NPM I --UNSAFE-PERM
