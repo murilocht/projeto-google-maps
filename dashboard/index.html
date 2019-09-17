@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>Servidor</title>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+  <style media="screen">
+    td {
+      max-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-8">
+        <div class="table-wrapper">
+          <div class="table-title">
+            <div class="row">
+              <div class="col-sm-12">
+                <h2>Marcadores</h2>
+              </div>
+            </div>
+          </div>
+
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>URL do Ícone</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+                <th>Opcões</th>
+              </tr>
+            </thead>
+
+            <tbody id="tabela"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="col-sm-4">
+        <div class="table-title">
+          <div class="row">
+            <div class="col-sm-12">
+              <h2>Formulário</h2>
+            </div>
+          </div>
+        </div>
+
+
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>URL do ícone</label>
+                <input class="form-control urlicone">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Latitude</label>
+                <input type="number" class="form-control latitude">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <label>Longitude</label>
+                <input type="number" class="form-control longitude">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="form-group">
+                <button class="btn btn-primary adicionar" class="salvar">Salvar</button>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+  <script type="text/javascript">
+    let api = 'http://localhost:3000';
+
+    function marcadores(){
+      axios.get(api).then((response) => {
+        $("#tabela").empty();
+        let data = response.data;
+        let keys = Object.keys(data);
+
+        for(let i = 0; i < keys.length; i++){
+          let tr = `
+            <tr>
+              <td>${ data[keys[i]].urlicone }</td>
+              <td>${ data[keys[i]].latitude }</td>
+              <td>${ data[keys[i]].longitude }</td>
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-danger apagar"
+                  data-id="${ data[keys[i]].id }"
+                >
+                  Apagar
+                </button>
+              </td>
+            </tr>
+          `;
+          $("#tabela").append(tr);
+        }
+      });
+    }
+
+    marcadores();
+
+    function isValidURL(str) {
+      var a  = document.createElement('a');
+      a.href = str;
+      return (a.host && a.host != window.location.host);
+    }
+
+    $(document).on('click', '.adicionar', function(){
+      if(
+        $('.urlicone').val().length > 0 &&
+        $('.latitude').val().length > 0 &&
+        $('.longitude').val().length > 0
+      ){
+        if(isValidURL($('.urlicone').val())){
+          axios.post(api+'/adicionar', {
+            urlicone: $('.urlicone').val(),
+            latitude: $('.latitude').val(),
+            longitude: $('.longitude').val()
+          })
+          .then(() => {
+            $('.urlicone').val('');
+            $('.latitude').val('');
+            $('.longitude').val('');
+
+            marcadores();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        }else{
+          alert('URL do ícone inválida!');
+        }
+      }else{
+        alert('Preencha todos os campos!');
+      }
+    });
+
+    $(document).on('click', '.apagar', function(){
+      var id = $(this).data('id');
+
+      axios.delete(api+'/apagar', { data: { id } })
+      .then(() => {
+        marcadores();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+Construa uma aplicação web/mobile com os seguintes requisitos:
+
+Mobile App
+	1º Tela com com mapa(Google Maps)
+	2º Na tela deve haver Markers com localização e ícone fixas
+	3º Dados devem ser consumidos da API
+
+Web Api
+	1º Padrão REST 
+	2º Uma rota disponibilizando path do ícone pra Marker, e a localização. {icon, lat_lng}
+	3º formulário de cadastro do icon e localização
+
+Tecnologias requisitadas: 
+	App em Ionic 
+	API PHP ou NodeJs
+	Base de dados mysql
